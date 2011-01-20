@@ -52,7 +52,8 @@ behavior: {
             	clickable: true,
             	draggable: true,
             	resizable: true
-            }
+            },
+			monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         };
         
         var opts = jQuery.extend(true, defaults, options);
@@ -117,8 +118,6 @@ behavior: {
             applyLastClass(div.parent());
 		}
 		
-		var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 		// Creates a 3 dimensional array [year][month][day] of every day 
 		// between the given start and end dates
         function getDates(start, end) {
@@ -169,7 +168,7 @@ behavior: {
 					monthsDiv.append(jQuery("<div>", {
 						"class": "bookingstimeline-hzheader-month",
 						"css": { "width": (w - 1) + "px" }
-					}).append(monthNames[m] + "/" + y));
+					}).append(opts.monthNames[m] + "/" + y));
 					for (var d in dates[y][m]) {
 						daysDiv.append(jQuery("<div>", { "class": "bookingstimeline-hzheader-day" })
 							.append(dates[y][m][d].getDate()));
