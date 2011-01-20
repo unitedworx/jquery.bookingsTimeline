@@ -1,9 +1,10 @@
-jQuery.ganttView
+jQuery.bookingsTimeline
 ================
 
-The jQuery.ganttView plugin is a very lightweight plugin for creating a Gantt chart in plain HTML...no vector graphics or images required.  The plugin supports dragging and resizing the Gantt blocks and callbacks to trap the updated data.
+Based on excellent [jQuery.ganttView](http://github.com/thegrubbsian/jquery.ganttView/) plugin by Frank (JC) Grubbs.
 
-![Sample Gantt](http://github.com/thegrubbsian/jquery.ganttView/raw/master/example/jquery-ganttview.png)
+The jQuery.bookingsTimeline plugin is a very lightweight plugin for creating a bookings timeline plain HTML...no vector graphics or images required.  
+The plugin supports dragging and resizing the blocks and callbacks to trap the updated data.
 
 
 Browser Compatibility
@@ -20,24 +21,14 @@ The plugin depends on the following libraries:
 - date.js
 
 
-Documentation
--------------
-Documentation will be coming soon!  I promise...
-
-
-Contribution
-------------
-Many people have been asking for more advanced features such as variable time-span for the blocks (hours, weeks, etc.) as well as support for hierarchical items and multiple items per line.  While I would love to be able to add all of these features I just don't have the time and it's often not within the scope of why I created the plugin.  However, I would be extremely happy to accept any pull requests from anyone interested in adding these features.  If you like the plugin, feel free to fork it and submit your patches back.
-
-
 License
 -------
-The jQuery.ganttView plugin may be used free of charge under the conditions 
+The jQuery.bookingsTimeline plugin may be used free of charge under the conditions 
 of the following license:
 
 The MIT License
 
-Copyright (c) 2010 Frank (JC) Grubbs - jc.grubbs@devmynd.com
+Copyright (c) 2011 Laurynas Butkus - laurynas.butkus@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,5 +1,6 @@
 /*
-jQuery.ganttView v.0.8.8
+jQuery.bookingsTimeline v.0.0.1
+Copyright (c) 2011 Laurynas Butkus - laurynas.butkus@gmail.com
 Copyright (c) 2010 JC Grubbs - jc.grubbs@devmynd.com
 MIT License Applies
 */
@@ -25,7 +26,7 @@ behavior: {
 
 (function (jQuery) {
 	
-    jQuery.fn.ganttView = function () {
+    jQuery.fn.bookingsTimeline = function () {
     	
     	var args = Array.prototype.slice.call(arguments);
     	
@@ -72,12 +73,12 @@ behavior: {
 	        els.each(function () {
 
 	            var container = jQuery(this);
-	            var div = jQuery("<div>", { "class": "ganttview" });
+	            var div = jQuery("<div>", { "class": "bookingstimeline" });
 	            new Chart(div, opts).render();
 				container.append(div);
 				
-				var w = jQuery("div.ganttview-vtheader", container).outerWidth() +
-					jQuery("div.ganttview-slide-container", container).outerWidth();
+				var w = jQuery("div.bookingstimeline-vtheader", container).outerWidth() +
+					jQuery("div.bookingstimeline-slide-container", container).outerWidth();
 	            container.css("width", (w + 2) + "px");
 	            
 	            new Behavior(container, opts).apply();
@@ -88,11 +89,11 @@ behavior: {
 	function handleMethod(method, value) {
 		
 		if (method == "setSlideWidth") {
-			var div = $("div.ganttview", this);
+			var div = $("div.bookingstimeline", this);
 			div.each(function () {
-				var vtWidth = $("div.ganttview-vtheader", div).outerWidth();
+				var vtWidth = $("div.bookingstimeline-vtheader", div).outerWidth();
 				$(div).width(vtWidth + value + 1);
-				$("div.ganttview-slide-container", this).width(value);
+				$("div.bookingstimeline-slide-container", this).width(value);
 			});
 		}
 	}
@@ -103,7 +104,7 @@ behavior: {
 			addVtHeader(div, opts.data, opts.cellHeight);
 
             var slideDiv = jQuery("<div>", {
-                "class": "ganttview-slide-container",
+                "class": "bookingstimeline-slide-container",
                 "css": { "width": opts.slideWidth + "px" }
             });
 			
@@ -138,16 +139,16 @@ behavior: {
         }
 
         function addVtHeader(div, data, cellHeight) {
-            var headerDiv = jQuery("<div>", { "class": "ganttview-vtheader" });
+            var headerDiv = jQuery("<div>", { "class": "bookingstimeline-vtheader" });
             for (var i = 0; i < data.length; i++) {
-                var itemDiv = jQuery("<div>", { "class": "ganttview-vtheader-item" });
+                var itemDiv = jQuery("<div>", { "class": "bookingstimeline-vtheader-item" });
                 itemDiv.append(jQuery("<div>", {
-                    "class": "ganttview-vtheader-item-name",
+                    "class": "bookingstimeline-vtheader-item-name",
                     "css": { "height": (data[i].series.length * cellHeight) + "px" }
                 }).append(data[i].name));
-                var seriesDiv = jQuery("<div>", { "class": "ganttview-vtheader-series" });
+                var seriesDiv = jQuery("<div>", { "class": "bookingstimeline-vtheader-series" });
                 for (var j = 0; j < data[i].series.length; j++) {
-                    seriesDiv.append(jQuery("<div>", { "class": "ganttview-vtheader-series-name" })
+                    seriesDiv.append(jQuery("<div>", { "class": "bookingstimeline-vtheader-series-name" })
 						.append(data[i].series[j].name));
                 }
                 itemDiv.append(seriesDiv);
@@ -157,20 +158,20 @@ behavior: {
         }
 
         function addHzHeader(div, dates, cellWidth) {
-            var headerDiv = jQuery("<div>", { "class": "ganttview-hzheader" });
-            var monthsDiv = jQuery("<div>", { "class": "ganttview-hzheader-months" });
-            var daysDiv = jQuery("<div>", { "class": "ganttview-hzheader-days" });
+            var headerDiv = jQuery("<div>", { "class": "bookingstimeline-hzheader" });
+            var monthsDiv = jQuery("<div>", { "class": "bookingstimeline-hzheader-months" });
+            var daysDiv = jQuery("<div>", { "class": "bookingstimeline-hzheader-days" });
             var totalW = 0;
 			for (var y in dates) {
 				for (var m in dates[y]) {
 					var w = dates[y][m].length * cellWidth;
 					totalW = totalW + w;
 					monthsDiv.append(jQuery("<div>", {
-						"class": "ganttview-hzheader-month",
+						"class": "bookingstimeline-hzheader-month",
 						"css": { "width": (w - 1) + "px" }
 					}).append(monthNames[m] + "/" + y));
 					for (var d in dates[y][m]) {
-						daysDiv.append(jQuery("<div>", { "class": "ganttview-hzheader-day" })
+						daysDiv.append(jQuery("<div>", { "class": "bookingstimeline-hzheader-day" })
 							.append(dates[y][m][d].getDate()));
 					}
 				}
@@ -182,20 +183,20 @@ behavior: {
         }
 
         function addGrid(div, data, dates, cellWidth, showWeekends) {
-            var gridDiv = jQuery("<div>", { "class": "ganttview-grid" });
-            var rowDiv = jQuery("<div>", { "class": "ganttview-grid-row" });
+            var gridDiv = jQuery("<div>", { "class": "bookingstimeline-grid" });
+            var rowDiv = jQuery("<div>", { "class": "bookingstimeline-grid-row" });
 			for (var y in dates) {
 				for (var m in dates[y]) {
 					for (var d in dates[y][m]) {
-						var cellDiv = jQuery("<div>", { "class": "ganttview-grid-row-cell" });
+						var cellDiv = jQuery("<div>", { "class": "bookingstimeline-grid-row-cell" });
 						if (DateUtils.isWeekend(dates[y][m][d]) && showWeekends) { 
-							cellDiv.addClass("ganttview-weekend"); 
+							cellDiv.addClass("bookingstimeline-weekend"); 
 						}
 						rowDiv.append(cellDiv);
 					}
 				}
 			}
-            var w = jQuery("div.ganttview-grid-row-cell", rowDiv).length * cellWidth;
+            var w = jQuery("div.bookingstimeline-grid-row-cell", rowDiv).length * cellWidth;
             rowDiv.css("width", w + "px");
             gridDiv.css("width", w + "px");
             for (var i = 0; i < data.length; i++) {
@@ -207,17 +208,17 @@ behavior: {
         }
 
         function addBlockContainers(div, data) {
-            var blocksDiv = jQuery("<div>", { "class": "ganttview-blocks" });
+            var blocksDiv = jQuery("<div>", { "class": "bookingstimeline-blocks" });
             for (var i = 0; i < data.length; i++) {
                 for (var j = 0; j < data[i].series.length; j++) {
-                    blocksDiv.append(jQuery("<div>", { "class": "ganttview-block-container" }));
+                    blocksDiv.append(jQuery("<div>", { "class": "bookingstimeline-block-container" }));
                 }
             }
             div.append(blocksDiv);
         }
 
         function addBlocks(div, data, cellWidth, start) {
-            var rows = jQuery("div.ganttview-blocks div.ganttview-block-container", div);
+            var rows = jQuery("div.bookingstimeline-blocks div.bookingstimeline-block-container", div);
             var rowIdx = 0;
             for (var i = 0; i < data.length; i++) {
                 for (var j = 0; j < data[i].series.length; j++) {
@@ -225,7 +226,7 @@ behavior: {
                     var size = DateUtils.daysBetween(series.start, series.end) + 1;
 					var offset = DateUtils.daysBetween(start, series.start);
 					var block = jQuery("<div>", {
-                        "class": "ganttview-block",
+                        "class": "bookingstimeline-block",
                         "title": series.name + ", " + size + " days",
                         "css": {
                             "width": ((size * cellWidth) - 9) + "px",
@@ -236,7 +237,7 @@ behavior: {
                     if (data[i].series[j].color) {
                         block.css("background-color", data[i].series[j].color);
                     }
-                    block.append(jQuery("<div>", { "class": "ganttview-block-text" }).text(size));
+                    block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text(size));
                     jQuery(rows[rowIdx]).append(block);
                     rowIdx = rowIdx + 1;
                 }
@@ -252,9 +253,9 @@ behavior: {
         }
 
         function applyLastClass(div) {
-            jQuery("div.ganttview-grid-row div.ganttview-grid-row-cell:last-child", div).addClass("last");
-            jQuery("div.ganttview-hzheader-days div.ganttview-hzheader-day:last-child", div).addClass("last");
-            jQuery("div.ganttview-hzheader-months div.ganttview-hzheader-month:last-child", div).addClass("last");
+            jQuery("div.bookingstimeline-grid-row div.bookingstimeline-grid-row-cell:last-child", div).addClass("last");
+            jQuery("div.bookingstimeline-hzheader-days div.bookingstimeline-hzheader-day:last-child", div).addClass("last");
+            jQuery("div.bookingstimeline-hzheader-months div.bookingstimeline-hzheader-month:last-child", div).addClass("last");
         }
 		
 		return {
@@ -280,13 +281,13 @@ behavior: {
 		}
 
         function bindBlockClick(div, callback) {
-            jQuery("div.ganttview-block", div).live("click", function () {
+            jQuery("div.bookingstimeline-block", div).live("click", function () {
                 if (callback) { callback(jQuery(this).data("block-data")); }
             });
         }
         
         function bindBlockResize(div, cellWidth, startDate, callback) {
-        	jQuery("div.ganttview-block", div).resizable({
+        	jQuery("div.bookingstimeline-block", div).resizable({
         		grid: cellWidth, 
         		handles: "e,w",
         		stop: function () {
@@ -298,7 +299,7 @@ behavior: {
         }
         
         function bindBlockDrag(div, cellWidth, startDate, callback) {
-        	jQuery("div.ganttview-block", div).draggable({
+        	jQuery("div.bookingstimeline-block", div).draggable({
         		axis: "x", 
         		grid: [cellWidth, cellWidth],
         		stop: function () {
@@ -310,7 +311,7 @@ behavior: {
         }
         
         function updateDataAndPosition(div, block, cellWidth, startDate) {
-        	var container = jQuery("div.ganttview-slide-container", div);
+        	var container = jQuery("div.bookingstimeline-slide-container", div);
         	var scroll = container.scrollLeft();
 			var offset = block.offset().left - container.offset().left - 1 + scroll;
 			
@@ -323,7 +324,7 @@ behavior: {
         	var width = block.outerWidth();
 			var numberOfDays = Math.round(width / cellWidth) - 1;
 			block.data("block-data").end = newStart.clone().addDays(numberOfDays);
-			jQuery("div.ganttview-block-text", block).text(numberOfDays + 1);
+			jQuery("div.bookingstimeline-block-text", block).text(numberOfDays + 1);
 			
 			// Remove top and left properties to avoid incorrect block positioning,
         	// set position to relative to keep blocks relative to scrollbar when scrolling
