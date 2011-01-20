@@ -54,7 +54,7 @@ div.bookingstimeline-hzheader-day {
 
 div.bookingstimeline-vtheader {
 	margin-top: 41px;
-	width: 240px;
+	width: 150px;
 	overflow: hidden;
 	background-color: #fff;
 }
@@ -65,18 +65,10 @@ div.bookingstimeline-vtheader-item {
 }
 
 div.bookingstimeline-vtheader-item-name {
-	width: 100px;
-	padding-left: 5px;
+	width: 140px;
+	padding: 0 5px;
 	border-top: 1px solid #d0d0d0;
 	line-height: 16px;
-}
-
-div.bookingstimeline-vtheader-series-name {
-	width: 130px;
-	height: 31px;
-	border-top: 1px solid #d0d0d0;
-	line-height: 16px;
-	padding-left: 5px;
 }
 
 
@@ -111,10 +103,11 @@ div.bookingstimeline-blocks {
 div.bookingstimeline-block-container {
 	height: 28px;
 	padding-top: 4px;
+	position: relative;
 }
 
 div.bookingstimeline-block {
-	position: relative;
+	position: absolute;
 	height: 25px;
 	background-color: #E5ECF9;
 	border: 1px solid #c0c0c0;

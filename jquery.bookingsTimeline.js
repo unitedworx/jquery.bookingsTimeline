@@ -143,14 +143,8 @@ behavior: {
                 var itemDiv = jQuery("<div>", { "class": "bookingstimeline-vtheader-item" });
                 itemDiv.append(jQuery("<div>", {
                     "class": "bookingstimeline-vtheader-item-name",
-                    "css": { "height": (data[i].series.length * cellHeight) + "px" }
+                    "css": { "height": cellHeight + "px" }
                 }).append(data[i].name));
-                var seriesDiv = jQuery("<div>", { "class": "bookingstimeline-vtheader-series" });
-                for (var j = 0; j < data[i].series.length; j++) {
-                    seriesDiv.append(jQuery("<div>", { "class": "bookingstimeline-vtheader-series-name" })
-						.append(data[i].series[j].name));
-                }
-                itemDiv.append(seriesDiv);
                 headerDiv.append(itemDiv);
             }
             div.append(headerDiv);
@@ -199,9 +193,7 @@ behavior: {
             rowDiv.css("width", w + "px");
             gridDiv.css("width", w + "px");
             for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].series.length; j++) {
-                    gridDiv.append(rowDiv.clone());
-                }
+                gridDiv.append(rowDiv.clone());
             }
             div.append(gridDiv);
         }
@@ -209,9 +201,7 @@ behavior: {
         function addBlockContainers(div, data) {
             var blocksDiv = jQuery("<div>", { "class": "bookingstimeline-blocks" });
             for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < data[i].series.length; j++) {
-                    blocksDiv.append(jQuery("<div>", { "class": "bookingstimeline-block-container" }));
-                }
+                blocksDiv.append(jQuery("<div>", { "class": "bookingstimeline-block-container" }));
             }
             div.append(blocksDiv);
         }
@@ -229,7 +219,7 @@ behavior: {
                         "title": series.name + ", " + size + " days",
                         "css": {
                             "width": ((size * cellWidth) - 9) + "px",
-                            "margin-left": ((offset * cellWidth) + 3) + "px"
+                            "left": ((offset * cellWidth) + 3) + "px"
                         }
                     });
                     addBlockData(block, data[i], series);
@@ -238,8 +228,9 @@ behavior: {
                     }
                     block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text(size));
                     jQuery(rows[rowIdx]).append(block);
-                    rowIdx = rowIdx + 1;
                 }
+
+                rowIdx = rowIdx + 1;
             }
         }
         
