@@ -292,10 +292,14 @@ behavior: {
         	jQuery("div.bookingstimeline-block", div).draggable({
         		axis: "x", 
         		grid: [cellWidth, cellWidth],
+				start: function() {
+					jQuery(this).zIndex(jQuery(this).zIndex()+1);
+				},
         		stop: function () {
         			var block = jQuery(this);
         			updateDataAndPosition(div, block, cellWidth, startDate);
         			if (callback) { callback(block.data("block-data")); }
+					jQuery(this).zIndex(jQuery(this).zIndex()-1);
         		}
         	});
         }
@@ -316,10 +320,7 @@ behavior: {
 			block.data("block-data").end = newStart.clone().addDays(numberOfDays);
 			jQuery("div.bookingstimeline-block-text", block).text(numberOfDays + 1);
 			
-			// Remove top and left properties to avoid incorrect block positioning,
-        	// set position to relative to keep blocks relative to scrollbar when scrolling
-			block.css("top", "").css("left", "")
-				.css("position", "relative").css("margin-left", offset + "px");
+			block.css("top", "").css("left", offset + "px");
         }
         
         return {
