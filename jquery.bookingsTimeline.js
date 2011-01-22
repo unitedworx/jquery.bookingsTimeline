@@ -212,11 +212,11 @@ behavior: {
             for (var i = 0; i < data.length; i++) {
                 for (var j = 0; j < data[i].series.length; j++) {
                     var series = data[i].series[j];
-                    var size = DateUtils.daysBetween(series.start, series.end) + 1;
+                    var size = DateUtils.daysBetween(series.start, series.end);
 					var offset = DateUtils.daysBetween(start, series.start);
 					var block = jQuery("<div>", {
                         "class": "bookingstimeline-block",
-                        "title": series.name + ", " + size + " days",
+                        "title": series.name + ", " + size + " nights",
                         "css": {
                             "width": ((size * cellWidth) - 9) + "px",
                             "left": ((offset * cellWidth) + 3) + "px"
@@ -316,9 +316,9 @@ behavior: {
 
 			// Set new end date
         	var width = block.outerWidth();
-			var numberOfDays = Math.round(width / cellWidth) - 1;
+			var numberOfDays = Math.round(width / cellWidth);
 			block.data("block-data").end = newStart.clone().addDays(numberOfDays);
-			jQuery("div.bookingstimeline-block-text", block).text(numberOfDays + 1);
+			jQuery("div.bookingstimeline-block-text", block).text(numberOfDays);
 			
 			block.css("top", "").css("left", offset + "px");
         }
