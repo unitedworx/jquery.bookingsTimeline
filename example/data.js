@@ -1,4 +1,4 @@
-var ganttData = [
+var timelineData = [
 	{
 		id: 1, name: "Facility 1", series: [
 			{ name: "Booking 1", start: new Date(2011,00,04), end: new Date(2011,00,05) },
