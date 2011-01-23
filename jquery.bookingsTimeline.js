@@ -226,6 +226,9 @@ behavior: {
                     if (data[i].series[j].color) {
                         block.css("background-color", data[i].series[j].color);
                     }
+					if (data[i].series[j].cssClass) {
+                        block.addClass(data[i].series[j].cssClass);
+                    }
                     block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text(size));
                     jQuery(rows[rowIdx]).append(block);
                 }

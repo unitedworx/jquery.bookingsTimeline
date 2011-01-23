@@ -7,7 +7,7 @@ var timelineData = [
 	}, 
 	{
 		id: 2, name: "Facility 2", series: [
-			{ name: "Booking 3", start: new Date(2011,00,05), end: new Date(2011,00,20) },
+			{ name: "Booking 3", start: new Date(2011,00,05), end: new Date(2011,00,20), cssClass: 'special' },
 			{ name: "Booking 4", start: new Date(2011,00,21), end: new Date(2011,00,27), color: "#f0f0f0" },
 			{ name: "Booking 5", start: new Date(2011,01,06), end: new Date(2011,01,17), color: "#e0e0e0" }
 		]
@@ -20,7 +20,7 @@ var timelineData = [
 	}, 
 	{
 		id: 4, name: "Facility 4", series: [
-			{ name: "Booking 8", start: new Date(2011,01,01), end: new Date(2011,01,03) },
+			{ name: "Booking 8", start: new Date(2011,01,01), end: new Date(2011,01,03), cssClass: 'special' },
 			{ name: "Booking 9", start: new Date(2011,01,04), end: new Date(2011,01,05), color: "#f0f0f0" }
 		]
 	},
