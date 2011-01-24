@@ -14,6 +14,9 @@ cellWidth: number
 cellHeight: number
 slideWidth: number
 dataUrl: string
+start: string or date
+end: string or date
+focus: string or date
 behavior: {
 	clickable: boolean,
 	draggable: boolean,
@@ -55,7 +58,8 @@ behavior: {
             },
 			monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 			start: null,
-			end: null
+			end: null,
+			focus: null
         };
         
         var opts = jQuery.extend(true, defaults, options);
@@ -87,8 +91,18 @@ behavior: {
 					jQuery("div.bookingstimeline-slide-container", container).outerWidth();
 	            container.css("width", (w + 2) + "px");
 	            
+				focusDate(opts.focus);
+
 	            new Behavior(container, opts).apply();
 	        });
+		}
+
+		function focusDate(date) {
+			date = Date.parse(date);
+		
+			var offset = DateUtils.daysBetween(opts.start, date) * opts.cellWidth;
+
+			jQuery("div.bookingstimeline-slide-container").scrollLeft(offset);
 		}
     }
 
@@ -105,7 +119,7 @@ behavior: {
 	}
 
 	var Chart = function(div, opts) {
-		
+
 		function render() {
 			addVtHeader(div, opts.data, opts.cellHeight);
 
@@ -121,6 +135,7 @@ behavior: {
             addBlocks(slideDiv, opts.data, opts.cellWidth, opts.start);
             div.append(slideDiv);
             applyLastClass(div.parent());
+			focus(opts.focus);
 		}
 		
 		// Creates a 3 dimensional array [year][month][day] of every day 

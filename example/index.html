@@ -35,6 +35,7 @@
 			$("#bookingsTimeline").bookingsTimeline({ 
 				data: timelineData,
 				slideWidth: 900,
+				//focus: 'today',
 				behavior: {
 					onClick: function (data) { 
 						var msg = "You clicked on booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
