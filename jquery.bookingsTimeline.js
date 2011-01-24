@@ -53,7 +53,9 @@ behavior: {
             	draggable: true,
             	resizable: true
             },
-			monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+			monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			start: null,
+			end: null
         };
         
         var opts = jQuery.extend(true, defaults, options);
@@ -66,10 +68,13 @@ behavior: {
 
 		function build() {
 			
-			var minDays = Math.floor((opts.slideWidth / opts.cellWidth)  + 5);
+			var minDays = Math.floor((opts.slideWidth / opts.cellWidth) + 5);
 			var startEnd = DateUtils.getBoundaryDatesFromData(opts.data, minDays);
-			opts.start = startEnd[0];
-			opts.end = startEnd[1];
+			var startDate = Date.parse(opts.start);
+			var endDate = Date.parse(opts.end);
+
+			opts.start = (startDate && startDate < startEnd[0]) ? startDate : startEnd[0];
+			opts.end = (endDate > startEnd[1]) ? endDate : startEnd[1];
 			
 	        els.each(function () {
 
