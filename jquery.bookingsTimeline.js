@@ -94,6 +94,9 @@ behavior: {
 				focusDate(opts.focus);
 
 	            new Behavior(container, opts).apply();
+
+                if (opts.onLoad)
+                    opts.onLoad(container);
 	        });
 		}
 
@@ -234,9 +237,9 @@ behavior: {
                     var series = data[i].series[j];
                     var size = DateUtils.daysBetween(series.start, series.end);
 					var offset = DateUtils.daysBetween(start, series.start);
-					var block = jQuery("<div>", {
+                    var block = jQuery("<div>", {
                         "class": "bookingstimeline-block",
-                        "title": series.name + ", " + size + " nights",
+                        "title": series.title ? series.title : series.name + ", " + size + " nights",
                         "css": {
                             "width": ((size * cellWidth) - 9) + "px",
                             "left": ((offset * cellWidth) + 3) + "px"
@@ -279,9 +282,11 @@ behavior: {
 	var Behavior = function (div, opts) {
 		
 		function apply() {
-			
+            bindBlockEvent(div, "mouseover", opts.behavior.onMouseOver);
+            bindBlockEvent(div, "mouseout", opts.behavior.onMouseOut);
+
 			if (opts.behavior.clickable) { 
-            	bindBlockClick(div, opts.behavior.onClick); 
+            	bindBlockEvent(div, "click", opts.behavior.onClick);
         	}
         	
             if (opts.behavior.resizable) { 
@@ -293,9 +298,9 @@ behavior: {
         	}
 		}
 
-        function bindBlockClick(div, callback) {
-            jQuery("div.bookingstimeline-block", div).live("click", function () {
-                if (callback) { callback(jQuery(this).data("block-data")); }
+        function bindBlockEvent(div, eventName, callback) {
+            jQuery("div.bookingstimeline-block", div).live(eventName, function () {
+                if (callback) { callback(jQuery(this).data("block-data"), this); }
             });
         }
         
@@ -306,7 +311,7 @@ behavior: {
         		stop: function () {
         			var block = jQuery(this);
         			updateDataAndPosition(div, block, cellWidth, startDate);
-        			if (callback) { callback(block.data("block-data")); }
+        			if (callback) { callback(block.data("block-data"), this); }
         		}
         	});
         }
@@ -321,7 +326,7 @@ behavior: {
         		stop: function () {
         			var block = jQuery(this);
         			updateDataAndPosition(div, block, cellWidth, startDate);
-        			if (callback) { callback(block.data("block-data")); }
+        			if (callback) { callback(block.data("block-data"), this); }
 					jQuery(this).zIndex(jQuery(this).zIndex()-1);
         		}
         	});
