@@ -28,6 +28,7 @@
 	<script type="text/javascript" src="../lib/jquery-1.4.2.js"></script>
 	<script type="text/javascript" src="../lib/date.js"></script>
 	<script type="text/javascript" src="../lib/jquery-ui-1.8.4.js"></script>
+
 	<script type="text/javascript" src="../jquery.bookingsTimeline.js"></script>
 	<script type="text/javascript" src="data.js"></script>
 	<script type="text/javascript">
@@ -35,19 +36,21 @@
 			$("#bookingsTimeline").bookingsTimeline({ 
 				data: timelineData,
 				slideWidth: 900,
-				//focus: 'today',
+				focus: 'today',
 				behavior: {
+//					draggable_axis : "y",
 					onClick: function (data) { 
 						var msg = "You clicked on booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 					},
-					onResize: function (data) { 
-						var msg = "You resized booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+					onResize: function (oldBooking, newBooking) { 
+						var msg = "You resized booking: { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 					},
-					onDrag: function (data) { 
-						var msg = "You dragged booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+					onDrag: function (oldBooking, newBooking, oldFacility, newFacility) { 
+						var msg = "You dragged booking " + oldBooking.name + " from " + oldFacility.name + " to " + newFacility.name + ": { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
+						return true;
 					}
 				}
 			});

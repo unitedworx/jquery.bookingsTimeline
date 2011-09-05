@@ -1,5 +1,6 @@
 /*
 jQuery.bookingsTimeline v.0.0.1
+Copyright (c) 2011 Roman Kalyakin - theorm@gmail.com
 Copyright (c) 2011 Laurynas Butkus - laurynas.butkus@gmail.com
 Copyright (c) 2010 JC Grubbs - jc.grubbs@devmynd.com
 MIT License Applies
@@ -11,7 +12,8 @@ div.bookingstimeline-vtheader,
 div.bookingstimeline-vtheader-item-name,
 div.bookingstimeline-vtheader-series,
 div.bookingstimeline-grid,
-div.bookingstimeline-grid-row-cell {
+div.bookingstimeline-grid-row-cell,
+div.bookingstimeline-grid-row-cell-midday {
 	float: left;
 }
 
@@ -91,6 +93,12 @@ div.bookingstimeline-grid-row-cell {
 
 div.bookingstimeline-grid-row-cell.bookingstimeline-weekend {
 	background-color: #fafafa;
+}
+
+div.bookingstimeline-grid-row-cell-midday {
+	width: 50%;
+	height: 100%;
+	border-right: 1px solid #fafafa;
 }
 
 

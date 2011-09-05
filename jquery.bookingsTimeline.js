@@ -1,5 +1,6 @@
 /*
 jQuery.bookingsTimeline v.0.0.1
+Copyright (c) 2011 Roman Kalyakin - theorm@gmail.com
 Copyright (c) 2011 Laurynas Butkus - laurynas.butkus@gmail.com
 Copyright (c) 2010 JC Grubbs - jc.grubbs@devmynd.com
 MIT License Applies
@@ -208,6 +209,7 @@ behavior: {
 						if (DateUtils.isWeekend(dates[y][m][d]) && showWeekends) { 
 							cellDiv.addClass("bookingstimeline-weekend"); 
 						}
+						cellDiv.append(jQuery("<div>", {"class": "bookingstimeline-grid-row-cell-midday"}));
 						rowDiv.append(cellDiv);
 					}
 				}
@@ -241,11 +243,11 @@ behavior: {
                         "class": "bookingstimeline-block",
                         "title": series.title ? series.title : series.name + ", " + size + " nights",
                         "css": {
-                            "width": ((size * cellWidth) - 9) + "px",
-                            "left": ((offset * cellWidth) + 3) + "px"
+                            "width": ((size * cellWidth) - 2) + "px",
+                            "left": ((offset * cellWidth) + Math.floor(cellWidth/2)) + "px"
                         }
                     });
-                    addBlockData(block, data[i], series);
+                    block.data("block-data", series); // booking data
                     if (data[i].series[j].color) {
                         block.css("background-color", data[i].series[j].color);
                     }
@@ -254,20 +256,16 @@ behavior: {
                     }
                     block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text(size));
                     jQuery(rows[rowIdx]).append(block);
+                    
+                    var facilityData = jQuery.extend({},data[i]);
+                    delete facilityData['series'];
+                    jQuery(rows[rowIdx]).data("block-data", facilityData);
                 }
 
                 rowIdx = rowIdx + 1;
             }
         }
         
-        function addBlockData(block, data, series) {
-        	// This allows custom attributes to be added to the series data objects
-        	// and makes them available to the 'data' argument of click, resize, and drag handlers
-        	var blockData = { id: data.id, name: data.name };
-        	jQuery.extend(blockData, series);
-        	block.data("block-data", blockData);
-        }
-
         function applyLastClass(div) {
             jQuery("div.bookingstimeline-grid-row div.bookingstimeline-grid-row-cell:last-child", div).addClass("last");
             jQuery("div.bookingstimeline-hzheader-days div.bookingstimeline-hzheader-day:last-child", div).addClass("last");
@@ -290,11 +288,11 @@ behavior: {
         	}
         	
             if (opts.behavior.resizable) { 
-            	bindBlockResize(div, opts.cellWidth, opts.start, opts.behavior.onResize); 
+            	bindBlockResize(div, opts.cellWidth, opts.start, opts.end, opts.behavior.onResize); 
         	}
             
             if (opts.behavior.draggable) { 
-            	bindBlockDrag(div, opts.cellWidth, opts.start, opts.behavior.onDrag); 
+            	bindBlockDrag(div, opts.cellWidth, opts.cellHeight, opts.start, opts.end, opts.behavior.onDrag, opts.behavior.draggable_axis); 
         	}
 		}
 
@@ -304,51 +302,120 @@ behavior: {
             });
         }
         
-        function bindBlockResize(div, cellWidth, startDate, callback) {
+        function bindBlockResize(div, cellWidth, startDate, endDate, callback) {
         	jQuery("div.bookingstimeline-block", div).resizable({
         		grid: cellWidth, 
         		handles: "e,w",
-        		stop: function () {
+        		stop: function (event, ui) {
         			var block = jQuery(this);
-        			updateDataAndPosition(div, block, cellWidth, startDate);
-        			if (callback) { callback(block.data("block-data"), this); }
+					var updatedPosition = getUpdatedPosition(div, block, cellWidth, startDate, endDate, ui.offset);
+        			if (callback) { 
+						var oldBookingData = block.data("block-data");
+        				var newBookingData = jQuery.extend(oldBookingData, {start: updatedPosition.start, end: updatedPosition.end});
+        				if (!callback(oldBookingData, newBookingData, this)) {
+        					updatedPosition.start = oldBookingData.start;
+        				    updatedPosition.end = oldBookingData.end;
+        				}
+        			}
+					updateDataAndPosition(block, updatedPosition);
+					var data = block.data("block-data");
+					var nights = (updatedPosition.end-updatedPosition.start)/(1000*60*60*24)
+					block.attr("title", data.title ? data.title : data.name + ", " + nights + " nights");
         		}
         	});
         }
         
-        function bindBlockDrag(div, cellWidth, startDate, callback) {
+        function bindBlockDrag(div, cellWidth, cellHeight, startDate, endDate, callback, draggable_axis) {
         	jQuery("div.bookingstimeline-block", div).draggable({
-        		axis: "x", 
-        		grid: [cellWidth, cellWidth],
-				start: function() {
+        		grid: [cellWidth, cellHeight+1],
+        		axis: draggable_axis,
+        		containment: jQuery("div.bookingstimeline-grid"),
+				start: function(event, ui) {
 					jQuery(this).zIndex(jQuery(this).zIndex()+1);
+					jQuery(this).data("old-position", jQuery(this).position().left);
 				},
-        		stop: function () {
+        		stop: function (event, ui) {
         			var block = jQuery(this);
-        			updateDataAndPosition(div, block, cellWidth, startDate);
-        			if (callback) { callback(block.data("block-data"), this); }
-					jQuery(this).zIndex(jQuery(this).zIndex()-1);
+        			var updatedPosition = getUpdatedPosition(div, block, cellWidth, startDate, endDate, ui.offset);
+        			if (callback) {
+        				var oldBookingData = block.data("block-data");
+        				var oldFacilityData = block.parent().data("block-data");
+        				var newBookingData = jQuery.extend(oldBookingData, {start: updatedPosition.start, end: updatedPosition.end});
+        				var newFacilityData = updatedPosition.facility.data("block-data");
+        				if (!callback(oldBookingData, newBookingData, oldFacilityData, newFacilityData, this)) {
+        					// if callback returns false put the block back into original position
+							block.animate({top: "5px", "left" : block.data("old-position") + "px"},function() {
+								block.css("top", ""); // when animation is over unset the 'top' property to centre the element in the cell.
+							});
+							jQuery(this).zIndex(jQuery(this).zIndex()-1);
+        					return;
+        				}
+        			}
+        			updateDataAndPosition(block, updatedPosition);
+    				jQuery(this).zIndex(jQuery(this).zIndex()-1);
         		}
         	});
+        	
         }
         
-        function updateDataAndPosition(div, block, cellWidth, startDate) {
+        /**
+         * Returns the following array
+         * - start - new start date
+         * - end - new end date
+         * - offset - new offset in pixels (x)
+         * - facility - new facility container (y)
+         */
+        function getUpdatedPosition(div, block, cellWidth, startDate, endDate, newOffset) {
         	var container = jQuery("div.bookingstimeline-slide-container", div);
         	var scroll = container.scrollLeft();
 			var offset = block.offset().left - container.offset().left - 1 + scroll;
-			
-			// Set new start date
+
+			// Get new start date
 			var daysFromStart = Math.round(offset / cellWidth);
 			var newStart = startDate.clone().addDays(daysFromStart);
-			block.data("block-data").start = newStart;
-
-			// Set new end date
-        	var width = block.outerWidth();
+        	
+        	// Get new end date
+			var width = block.outerWidth();
 			var numberOfDays = Math.round(width / cellWidth);
-			block.data("block-data").end = newStart.clone().addDays(numberOfDays);
-			jQuery("div.bookingstimeline-block-text", block).text(numberOfDays);
+			var newEnd = newStart.clone().addDays(numberOfDays);
 			
-			block.css("top", "").css("left", offset + "px");
+			// update if the facility changed (dragged to another container over the y axis)
+			var facilityElement = block.parent();
+			if (newOffset != null) {
+				var facilities = jQuery("div.bookingstimeline-block-container");
+				var blockTopOffset = newOffset.top;
+				facilities.each(function(idx, facility) {
+					var facilityTopOffset = jQuery(facility).offset().top;
+					var facilityHeight = jQuery(facility).outerHeight();
+					if (facilityTopOffset <= blockTopOffset && (facilityTopOffset + facilityHeight) > blockTopOffset) {
+						facilityElement = jQuery(facility);
+						return false;
+					}
+				});
+			}
+			
+			return {
+				start: newStart,
+				end: newEnd,
+				offset: offset,
+				facility: facilityElement,
+			};
+
+        }
+        
+        function updateDataAndPosition(block, updatedPosition) {
+        	// handle x axis
+			block.data("block-data").start = updatedPosition.start;
+			block.data("block-data").end = updatedPosition.end;
+			// this line below is not needed. we jquery with  proper positioning 
+			//block.css("top", "").css("left", updatedPosition.offset + "px");
+
+			// handle y axis
+			if (updatedPosition.facility != block.parent()) {
+				block.detach();
+				updatedPosition.facility.append(block);
+				block.css("top", "");
+			}
         }
         
         return {
