@@ -36,6 +36,7 @@ behavior: {
     	
     	if (args.length == 1 && typeof(args[0]) == "object") {
         	build.call(this, args[0]);
+        	
     	}
     	
     	if (args.length == 2 && typeof(args[0]) == "string") {
@@ -70,6 +71,11 @@ behavior: {
 		} else if (opts.dataUrl) {
 			jQuery.getJSON(opts.dataUrl, function (data) { opts.data = data; build(); });
 		}
+		
+		// save settings without data for future use.
+		var settings = jQuery.extend(true,{},opts);
+		delete settings['data'];
+		this.data("options",settings);
 
 		function build() {
 			
@@ -85,7 +91,9 @@ behavior: {
 
 	            var container = jQuery(this);
 	            var div = jQuery("<div>", { "class": "bookingstimeline" });
-	            new Chart(div, opts).render();
+	            var chart = new Chart(div, opts)
+	            chart.render();
+	            container.data("chart", chart);
 				container.append(div);
 				
 				var w = jQuery("div.bookingstimeline-vtheader", container).outerWidth() +
@@ -109,7 +117,7 @@ behavior: {
 			jQuery("div.bookingstimeline-slide-container").scrollLeft(offset);
 		}
     }
-
+    
 	function handleMethod(method, value) {
 		
 		if (method == "setSlideWidth") {
@@ -119,6 +127,13 @@ behavior: {
 				$(div).width(vtWidth + value + 1);
 				$("div.bookingstimeline-slide-container", this).width(value);
 			});
+		}
+		
+		if (method == "addBookings") {
+			jQuery(this).data("chart").addBookings(jQuery(this), value);
+		}
+		if (method == "removeBookings") {
+			jQuery(this).data("chart").removeBookings(jQuery(this), value);
 		}
 	}
 
@@ -231,7 +246,7 @@ behavior: {
             div.append(blocksDiv);
         }
 
-        function addBlocks(div, data, cellWidth, start) {
+        function addBlocks(div, data, cellWidth, start, animate) {
             var rows = jQuery("div.bookingstimeline-blocks div.bookingstimeline-block-container", div);
             var rowIdx = 0;
             for (var i = 0; i < data.length; i++) {
@@ -255,7 +270,11 @@ behavior: {
                         block.addClass(data[i].series[j].cssClass);
                     }
                     block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text(size));
-                    jQuery(rows[rowIdx]).append(block);
+                    if (animate) {
+                    	block.hide().appendTo(jQuery(rows[rowIdx])).fadeIn();
+                    } else {
+	                    jQuery(rows[rowIdx]).append(block);                    	
+                    }
                     
                     var facilityData = jQuery.extend({},data[i]);
                     delete facilityData['series'];
@@ -271,9 +290,29 @@ behavior: {
             jQuery("div.bookingstimeline-hzheader-days div.bookingstimeline-hzheader-day:last-child", div).addClass("last");
             jQuery("div.bookingstimeline-hzheader-months div.bookingstimeline-hzheader-month:last-child", div).addClass("last");
         }
+        
+        function addBookings(div, bookings) {
+        	var options = div.data("options");
+        	addBlocks(div,bookings,options.cellWidth,options.start,true);
+			new Behavior(div, options).apply();
+        }
+        
+        function removeBookings(div, toRemove) {
+        	var options = div.data("options");
+			var bookings = jQuery("div.bookingstimeline-block", div);
+			bookings.each(function(idx, booking) {
+				booking = jQuery(booking);
+				var bookingId = booking.data("block-data").id;
+				if (jQuery.inArray(bookingId, toRemove) >= 0) {
+					booking.fadeOut("slow", function() {jQuery(this).remove();});
+				}
+			});
+        }
 		
 		return {
-			render: render
+			render: render,
+			addBookings: addBookings,
+			removeBookings: removeBookings,
 		};
 	}
 
@@ -321,6 +360,7 @@ behavior: {
 					var data = block.data("block-data");
 					var nights = (updatedPosition.end-updatedPosition.start)/(1000*60*60*24)
 					block.attr("title", data.title ? data.title : data.name + ", " + nights + " nights");
+					block.find("div.bookingstimeline-block-text").text(nights);
         		}
         	});
         }

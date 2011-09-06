@@ -24,6 +24,9 @@
 	<div id="bookingsTimeline"></div>
 	<br/><br/>
 	<div id="eventMessage"></div>
+	<br/><br/>
+	<a href="#" id="addRandomBookings">Add random booking</a>
+	<a href="#" id="removeRandomBookings">Remove random booking</a>
 
 	<script type="text/javascript" src="../lib/jquery-1.4.2.js"></script>
 	<script type="text/javascript" src="../lib/date.js"></script>
@@ -55,6 +58,24 @@
 				}
 			});
 			
+			$("#addRandomBookings").click(function() {
+				var bookings = [{
+					id: 1, name: "Facility 1", series: [
+						{ id: 21, name: "New Booking 1", start: new Date(2011,01,05), end: new Date(2011,01,07) },
+						{ id: 22, name: "New Booking 2", start: new Date(2011,01,09), end: new Date(2011,01,12), color: "#f0f0f0" }
+					]
+				}];
+				$("#bookingsTimeline").bookingsTimeline('addBookings', bookings);
+
+				return false;
+			});
+			
+			$("#removeRandomBookings").click(function() {
+				var bookings = [21,22];
+				$("#bookingsTimeline").bookingsTimeline('removeBookings', bookings);
+				return false;
+			});
+
 			// $("#bookingsTimeline").bookingsTimeline("setSlideWidth", 600);
 		});
 	</script>
