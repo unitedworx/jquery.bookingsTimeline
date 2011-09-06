@@ -436,7 +436,9 @@ behavior: {
     	
         daysBetween: function (start, end) {
             if (!start || !end) { return 0; }
-            start = Date.parse(start); end = Date.parse(end);
+            if (typeof(start) == 'string') {start = Date.parse(start);}            	 
+            if (typeof(end) == 'string') {end = Date.parse(end);}
+
             if (start.getYear() == 1901 || end.getYear() == 8099) { return 0; }
             var count = 0, date = start.clone();
             while (date.compareTo(end) == -1) { count = count + 1; date.addDays(1); }
