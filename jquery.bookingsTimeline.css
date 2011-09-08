@@ -95,10 +95,19 @@ div.bookingstimeline-grid-row-cell.bookingstimeline-weekend {
 	background-color: #fafafa;
 }
 
+div.bookingstimeline-grid-row-cell.selected {
+	background-color: #FBCB09;
+	border-right: 1px solid transparent;
+}
+
 div.bookingstimeline-grid-row-cell-midday {
 	width: 50%;
 	height: 100%;
 	border-right: 1px solid #fafafa;
+}
+
+div.bookingstimeline-grid-row-cell.selected div.bookingstimeline-grid-row-cell-midday {
+	border-right: none;
 }
 
 
@@ -106,6 +115,9 @@ div.bookingstimeline-grid-row-cell-midday {
 
 div.bookingstimeline-blocks {
 	margin-top: 40px;
+	/* setting minimum w&h to get it out of the way when doing selection */
+	width: 1px;
+	height: 1px;
 }
 
 div.bookingstimeline-block-container {

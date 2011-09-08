@@ -24,7 +24,8 @@ behavior: {
 	resizable: boolean,
 	onClick: function,
 	onDrag: function,
-	onResize: function
+	onResize: function,
+	onNewBooking: function
 }
 */
 
@@ -150,8 +151,9 @@ behavior: {
             dates = getDates(opts.start, opts.end);
             addHzHeader(slideDiv, dates, opts.cellWidth);
             addGrid(slideDiv, opts.data, dates, opts.cellWidth, opts.showWeekends);
-            addBlockContainers(slideDiv, opts.data);
+            addBlockContainers(slideDiv, opts.data, opts);
             addBlocks(slideDiv, opts.data, opts.cellWidth, opts.start);
+            setupBlockContainersEvents(slideDiv,opts);
             div.append(slideDiv);
             applyLastClass(div.parent());
 			focus(opts.focus);
@@ -238,12 +240,78 @@ behavior: {
             div.append(gridDiv);
         }
 
-        function addBlockContainers(div, data) {
+        function addBlockContainers(div, data, opts) {
             var blocksDiv = jQuery("<div>", { "class": "bookingstimeline-blocks" });
             for (var i = 0; i < data.length; i++) {
                 blocksDiv.append(jQuery("<div>", { "class": "bookingstimeline-block-container" }));
             }
             div.append(blocksDiv);
+        }
+        
+        function selection(mousemoveEvent) {
+        	var endIndex = $(this).index();
+        	var startIndex = jQuery(this).closest("div.bookingstimeline").data("selection").start;
+        	var direction = "right"; 
+        	if (endIndex < startIndex) {
+        		direction = "left";
+        		var tmp = startIndex;
+        		startIndex = endIndex;
+        		endIndex = tmp;
+        	}
+        	var cells = jQuery("div.bookingstimeline-grid-row-cell", $(this).closest("div.bookingstimeline-grid-row"));
+        	cells.removeClass("selected");
+        	cells.each(function(idx,cell) {
+        		if (idx >= startIndex && idx <= endIndex) {
+        			$(cell).addClass("selected");
+        		}
+        	});
+			//console.log("moving " + direction + " " + startIndex + " - " + endIndex); 								
+        }
+        
+        function setupBlockContainersEvents(div, opts) {
+        	jQuery("div.bookingstimeline-grid-row-cell", div).each(function(idx,cell) {
+        		jQuery(cell).mousedown(function() {
+        			var facilityIndex = jQuery(this).closest("div.bookingstimeline-grid-row").index();
+        			var facilityData = jQuery(jQuery("div.bookingstimeline-block-container",div).get(facilityIndex)).data("block-data");
+        			//console.log("selected on: " + facilityData.name + " " + facilityIndex);
+        			// save selection data
+        			jQuery(this).closest("div.bookingstimeline").data("selection",{start: $(this).index(), facility: facilityData});
+	        		// hook up moving event
+	        		jQuery("div.bookingstimeline-grid-row-cell",jQuery(this).closest("div.bookingstimeline-grid-row")).mousemove(selection);
+	        		$(this).addClass("selected");
+	        		return false;
+        		});
+        		jQuery(cell).mouseup(function() {
+        			if (jQuery(this).closest("div.bookingstimeline").data("selection")) {
+        				var cells = jQuery("div.bookingstimeline-grid-row-cell",jQuery(this).closest("div.bookingstimeline-grid-row"))
+		        		cells.unbind("mousemove");
+		        		cells.removeClass("selected");
+		        		var timeline = jQuery(this).closest("div.bookingstimeline");
+	        			var selection = timeline.data("selection");
+	        			timeline.data("selection",null);
+	        			//console.log("moved: " + $(this));
+	        			
+	        			var opts = jQuery(this).closest("div.bookingstimeline").parent().data("options");
+			        	
+			        	if (opts.behavior.onNewBooking) {
+				        	var endIndex = $(this).index();
+				        	var startIndex = selection.start;
+				        	if (endIndex < startIndex) {
+				        		var tmp = startIndex;
+				        		startIndex = endIndex;
+				        		endIndex = tmp;
+				        	}
+							var startDate = new Date(opts.start);
+							startDate.setDate(startDate.getDate()+startIndex);
+							var endDate = new Date(startDate);
+							endDate.setDate(startDate.getDate()+(endIndex-startIndex));
+							//console.log("New booking for " + selection.facility.name + " from " + startDate + " to " + endDate);
+							opts.behavior.onNewBooking(startDate, endDate, selection.facility);
+			        	}
+        			}
+        		});
+
+        	});
         }
 
         function addBlocks(div, data, cellWidth, start, animate) {

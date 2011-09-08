@@ -54,6 +54,10 @@
 						var msg = "You dragged booking " + oldBooking.name + " from " + oldFacility.name + " to " + newFacility.name + ": { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 						return true;
+					},
+					onNewBooking : function(from,to,facility) {
+						var msg = "New booking requested for " + facility.name + " from " + from + " to " + to;
+						$("#eventMessage").text(msg);
 					}
 				}
 			});
