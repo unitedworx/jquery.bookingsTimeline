@@ -70,9 +70,10 @@ behavior: {
 		if (opts.data) {
 			buildAndSave(this, opts);
 		} else if (opts.dataUrl) {
+			var div = this;
 			jQuery.getJSON(opts.dataUrl, function (data) { 
 				opts.data = data; 
-				buildAndSave(this, opts);
+				buildAndSave(div, opts);
 			});
 		}
 		
