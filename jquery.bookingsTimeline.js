@@ -68,15 +68,22 @@ behavior: {
         var opts = jQuery.extend(true, defaults, options);
 
 		if (opts.data) {
-			build();
+			buildAndSave(this, opts);
 		} else if (opts.dataUrl) {
-			jQuery.getJSON(opts.dataUrl, function (data) { opts.data = data; build(); });
+			jQuery.getJSON(opts.dataUrl, function (data) { 
+				opts.data = data; 
+				buildAndSave(this, opts);
+			});
 		}
 		
-		// save settings without data for future use.
-		var settings = jQuery.extend(true,{},opts);
-		delete settings['data'];
-		this.data("options",settings);
+		function buildAndSave(div, opts) {
+			build();
+			// save settings without data for future use.
+			var settings = jQuery.extend(true,{},opts);
+			delete settings['data'];
+			div.data("options",settings);
+		}
+		
 
 		function build() {
 			
