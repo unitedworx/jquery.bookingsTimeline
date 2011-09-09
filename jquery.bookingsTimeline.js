@@ -352,11 +352,10 @@ behavior: {
 	                    jQuery(rows[rowIdx]).append(block);                    	
                     }
                     
-                    var facilityData = jQuery.extend({},data[i]);
-                    delete facilityData['series'];
-                    jQuery(rows[rowIdx]).data("block-data", facilityData);
                 }
-
+                var facilityData = jQuery.extend({},data[i]);
+                delete facilityData['series'];
+                jQuery(rows[rowIdx]).data("block-data", facilityData);
                 rowIdx = rowIdx + 1;
             }
         }

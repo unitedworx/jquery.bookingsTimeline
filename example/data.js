@@ -47,5 +47,8 @@ var timelineData = [
 			{ id: 16, name: "Booking 16", start: new Date(2011,01,01), end: new Date(2011,01,03) },
 			{ id: 17, name: "Booking 17", start: new Date(2011,01,04), end: new Date(2011,01,05), color: "#f0f0f0" }
 		]
+	},
+	{
+		id: 8, name: "Facility 9", series: []
 	}
 ];
