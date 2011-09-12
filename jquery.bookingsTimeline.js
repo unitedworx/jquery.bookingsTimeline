@@ -23,6 +23,7 @@ behavior: {
 	draggable: boolean,
 	resizable: boolean,
 	onClick: function,
+	onDblClick: function,
 	onDrag: function,
 	onResize: function,
 	onNewBooking: function
@@ -399,6 +400,7 @@ behavior: {
 
 			if (opts.behavior.clickable) { 
             	bindBlockEvent(div, "click", opts.behavior.onClick);
+            	bindBlockEvent(div, "dblclick", opts.behavior.onDblClick);
         	}
         	
             if (opts.behavior.resizable) { 

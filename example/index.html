@@ -46,6 +46,10 @@
 						var msg = "You clicked on booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 					},
+					onDblClick: function (data) { 
+						var msg = "You double clicked on booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+						$("#eventMessage").text(msg);
+					},
 					onResize: function (oldBooking, newBooking) { 
 						var msg = "You resized booking: { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
