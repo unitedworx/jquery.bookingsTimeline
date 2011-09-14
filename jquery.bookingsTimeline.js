@@ -58,7 +58,8 @@ behavior: {
             behavior: {
             	clickable: true,
             	draggable: true,
-            	resizable: true
+            	resizable: true,
+            	cross_highlight: true
             },
 			monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 			start: null,
@@ -400,6 +401,10 @@ behavior: {
 		function apply() {
             bindBlockEvent(div, "mouseover", opts.behavior.onMouseOver);
             bindBlockEvent(div, "mouseout", opts.behavior.onMouseOut);
+            
+            if (opts.behavior.cross_highlight) {
+            	bindCrossHighlight(div);
+            }
 
 			if (opts.behavior.clickable) { 
             	bindBlockEvent(div, "click", opts.behavior.onClick);
@@ -413,6 +418,31 @@ behavior: {
             if (opts.behavior.draggable) { 
             	bindBlockDrag(div, opts.cellWidth, opts.cellHeight, opts.start, opts.end, opts.behavior.onDrag, opts.behavior.draggable_axis); 
         	}
+		}
+		
+		function getDayAndFacilityForCell(div, cell) {
+				cell = jQuery(cell);
+            	var x = cell.index();
+            	var y = cell.parent().index();
+            	var day = jQuery("div.bookingstimeline-hzheader-day", div).get(x);
+            	var facility = jQuery("div.bookingstimeline-vtheader-item", div).get(y);
+            	return {
+            		'day' : jQuery(day),
+            		'facility' : jQuery(facility)
+            	}
+		}
+		
+		function bindCrossHighlight(div) {
+            jQuery("div.bookingstimeline-grid-row-cell", div).live("mouseover", function () {
+            	var df = getDayAndFacilityForCell(div,this);
+				df.day.addClass("highlight");
+				df.facility.addClass("highlight");
+            });
+            jQuery("div.bookingstimeline-grid-row-cell", div).live("mouseout", function () {
+	        	var df = getDayAndFacilityForCell(div,this);
+				df.day.removeClass("highlight");
+				df.facility.removeClass("highlight");
+            });
 		}
 
         function bindBlockEvent(div, eventName, callback) {
