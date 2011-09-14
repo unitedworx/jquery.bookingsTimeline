@@ -150,3 +150,7 @@ div.bookingstimeline-block-text {
 div.bookingstimeline-block div.ui-resizable-handle.ui-resizable-s {
 	bottom: -0;
 }
+
+.highlight {
+	background-color: #1Cb4d4;
+}
