@@ -339,6 +339,9 @@ behavior: {
                             "left": ((offset * cellWidth) + Math.floor(cellWidth/2)) + "px"
                         }
                     });
+                    series.start = Date.parse(series.start);
+                    series.end = Date.parse(series.end);
+                    
                     block.data("block-data", series); // booking data
                     if (data[i].series[j].color) {
                         block.css("background-color", data[i].series[j].color);
@@ -424,13 +427,18 @@ behavior: {
         		handles: "e,w",
         		stop: function (event, ui) {
         			var block = jQuery(this);
-					var updatedPosition = getUpdatedPosition(div, block, cellWidth, startDate, endDate, ui.offset);
+					var updatedPosition = getUpdatedPosition(div, block, cellWidth, startDate, endDate, ui.position);
+					var facility = block.parent().data("block-data");
         			if (callback) { 
 						var oldBookingData = block.data("block-data");
-        				var newBookingData = jQuery.extend(oldBookingData, {start: updatedPosition.start, end: updatedPosition.end});
-        				if (!callback(oldBookingData, newBookingData, this)) {
+						var newBookingData = jQuery.extend({},oldBookingData);
+        				newBookingData = jQuery.extend(newBookingData, {start: updatedPosition.start, end: updatedPosition.end});
+        				if (!callback(oldBookingData, newBookingData, facility, this)) {
         					updatedPosition.start = oldBookingData.start;
         				    updatedPosition.end = oldBookingData.end;
+	                        var size = DateUtils.daysBetween(updatedPosition.start, updatedPosition.end);
+							var offset = DateUtils.daysBetween(startDate, updatedPosition.start);
+							block.animate({width: ((size * cellWidth) - 2) + "px", "left" : ((offset * cellWidth) + Math.floor(cellWidth/2)) + "px"});
         				}
         			}
 					updateDataAndPosition(block, updatedPosition);
@@ -457,7 +465,8 @@ behavior: {
         			if (callback) {
         				var oldBookingData = block.data("block-data");
         				var oldFacilityData = block.parent().data("block-data");
-        				var newBookingData = jQuery.extend(oldBookingData, {start: updatedPosition.start, end: updatedPosition.end});
+        				var newBookingData = jQuery.extend({},oldBookingData);
+        				newBookingData = jQuery.extend(newBookingData, {start: updatedPosition.start, end: updatedPosition.end});
         				var newFacilityData = updatedPosition.facility.data("block-data");
         				if (!callback(oldBookingData, newBookingData, oldFacilityData, newFacilityData, this)) {
         					// if callback returns false put the block back into original position
