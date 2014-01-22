@@ -13,9 +13,18 @@
 			padding: 10px;
 		}
 
-		.bookingstimeline-block.special {
-			background-color: yellow;
+		.bookingstimeline-block.blue {
+			background-color: #bae3ff;
 		}
+		.bookingstimeline-block.yellow {
+			background-color: #fffea9;
+		}
+		.bookingstimeline-block.green {
+			background-color: #abffac;
+			
+		}
+
+		
 	</style>
 	<title>jQuery bookingsTimeline example</title>
 </head>
@@ -28,6 +37,11 @@
 	<a href="#" id="addRandomBookings">Add random booking</a>
 	<a href="#" id="removeRandomBookings">Remove random booking</a>
 
+	<br/>
+	<br/>Notes:
+	<br/>Yellow Bookings only can be resized 
+	<br/>Green Bookings only can be moved
+	<br/>
 	<script type="text/javascript" src="../lib/jquery-1.4.2.js"></script>
 	<script type="text/javascript" src="../lib/date.js"></script>
 	<script type="text/javascript" src="../lib/jquery-ui-1.8.4.js"></script>
@@ -51,13 +65,27 @@
 						$("#eventMessage").text(msg);
 					},
 					onResize: function (oldBooking, newBooking) { 
-						var msg = "You resized booking #"+newBooking.id+" { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
-						$("#eventMessage").text(msg);
+						
+						if (oldBooking.resizeable=='true') { 
+							var msg = "You resized booking #"+newBooking.id+" { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
+							$("#eventMessage").text(msg);
+							return true; 
+						} else { 
+							var msg = "You Can not resize This Booking";
+							$("#eventMessage").text(msg);
+							return false; 
+						}
 					},
 					onDrag: function (oldBooking, newBooking, oldFacility, newFacility) { 
-						var msg = "You dragged booking #" + oldBooking.id + " from " + oldFacility.name + " to " + newFacility.name + ": { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
-						$("#eventMessage").text(msg);
-						return true;
+						if (oldBooking.dragable=='true') { 
+							var msg = "You dragged booking #" + oldBooking.id + " from " + oldFacility.name + " to " + newFacility.name + ": { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
+							$("#eventMessage").text(msg);
+							return true; 
+						} else { 
+							var msg = "You Can not Move This Booking";
+							$("#eventMessage").text(msg);
+							return false; 
+						}
 					},
 					onNewBooking : function(from,to,facility) {
 						var msg = "New booking requested for " + facility.name + " from " + from + " to " + to;
