@@ -43,19 +43,19 @@
 				behavior: {
 //					draggable_axis : "y",
 					onClick: function (data) { 
-						var msg = "You clicked on booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+						var msg = "You clicked on booking #"+data.id+" { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 					},
 					onDblClick: function (data) { 
-						var msg = "You double clicked on booking: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+						var msg = "You double clicked on booking #"+data.id+" { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 					},
 					onResize: function (oldBooking, newBooking) { 
-						var msg = "You resized booking: { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
+						var msg = "You resized booking #"+newBooking.id+" { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 					},
 					onDrag: function (oldBooking, newBooking, oldFacility, newFacility) { 
-						var msg = "You dragged booking " + oldBooking.name + " from " + oldFacility.name + " to " + newFacility.name + ": { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
+						var msg = "You dragged booking #" + oldBooking.id + " from " + oldFacility.name + " to " + newFacility.name + ": { start: " + newBooking.start.toString("M/d/yyyy") + ", end: " + newBooking.end.toString("M/d/yyyy") + " }";
 						$("#eventMessage").text(msg);
 						return true;
 					},
