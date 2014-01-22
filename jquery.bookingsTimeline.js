@@ -350,7 +350,7 @@ behavior: {
 					if (data[i].series[j].cssClass) {
                         block.addClass(data[i].series[j].cssClass);
                     }
-                    block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text(size));
+                    block.append(jQuery("<div>", { "class": "bookingstimeline-block-text" }).text('#'+series.id));
                     if (animate) {
                     	block.hide().appendTo(jQuery(rows[rowIdx])).fadeIn();
                     } else {
@@ -475,7 +475,7 @@ behavior: {
 					var data = block.data("block-data");
 					var nights = (updatedPosition.end-updatedPosition.start)/(1000*60*60*24)
 					block.attr("title", data.title ? data.title : data.name + ", " + nights + " nights");
-					block.find("div.bookingstimeline-block-text").text(nights);
+					block.find("div.bookingstimeline-block-text").text('#'+series.id);
         		}
         	});
         }
