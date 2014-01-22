@@ -327,6 +327,21 @@ behavior: {
         function addBlocks(div, data, cellWidth, start, animate) {
             var rows = jQuery("div.bookingstimeline-blocks div.bookingstimeline-block-container", div);
             var rowIdx = 0;
+            
+            // if we are adding a single booking the find the correct row using the facility name
+            // and increment the rowIdx in order to add the cooking to the correct row.
+            // this is useful after initislizing with several facilities when addign a single booking via run time.
+            if (data[0].series.length==1){
+	            var facilitycount=0;
+	           $(".bookingstimeline-vtheader-item").each(function(){
+		            var facilityname = $(this).find(".bookingstimeline-vtheader-item-name").text();
+		            if (facilityname==data[0].name){
+			           rowIdx = facilitycount; 
+		            }
+		            facilitycount++;
+	            });
+            }
+            
             for (var i = 0; i < data.length; i++) {
                 for (var j = 0; j < data[i].series.length; j++) {
                     var series = data[i].series[j];
