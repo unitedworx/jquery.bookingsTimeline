@@ -131,9 +131,11 @@ div.bookingstimeline-block {
 	height: 25px;
 	background-color: #E5ECF9;
 	border: 1px solid #c0c0c0;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	overflow: hidden;
+	
 }
 
 div.bookingstimeline-block-text {
@@ -153,4 +155,12 @@ div.bookingstimeline-block div.ui-resizable-handle.ui-resizable-s {
 
 .highlight {
 	background-color: #1Cb4d4;
+}
+
+.ui-resizable-e{
+width: 13px;	
+}
+
+.ui-resizable-w{
+width: 13px;	
 }
